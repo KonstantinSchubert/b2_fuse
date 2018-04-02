@@ -58,3 +58,6 @@ target/
 
 # Visual Studio Code Files
 .vscode/
+
+# User config files
+config.yaml
