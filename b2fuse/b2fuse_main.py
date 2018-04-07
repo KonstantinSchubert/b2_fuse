@@ -411,7 +411,6 @@ class B2Fuse(Operations):
         file_info['fileName'] = path
 
         self.open_files[path] = self.B2File(self, file_info, new_file=True)
-        self.open_files[path].upload()
 
         self.fd += 1
         return self.fd

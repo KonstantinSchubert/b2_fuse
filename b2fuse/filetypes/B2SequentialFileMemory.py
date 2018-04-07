@@ -38,6 +38,7 @@ class B2SequentialFileMemory(B2BaseFile):
         if new_file:
             self.data = array.array('c')
             self._dirty = True
+            self.upload()
         else:
             download_dest = DownloadDestBytes()
             self.b2fuse.bucket_api.download_file_by_id(self.file_info['fileId'], download_dest)
