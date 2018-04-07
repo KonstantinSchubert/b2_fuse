@@ -192,7 +192,7 @@ class B2Fuse(Operations):
             online_files = [l[0].file_name for l in self.bucket_api.ls()]
             
             if path in online_files:
-                #print "File is in bucket"
+                # print "File is in bucket"
                 file_info = self._directories.get_file_info(path)
                 
                 seconds_since_jan1_1970 = int(file_info['uploadTimestamp']/1000.)
@@ -214,17 +214,6 @@ class B2Fuse(Operations):
                     st_atime=0,
                     st_nlink=1,
                     st_size=42
-                )
-
-            else:
-                #print "File exists only locally"
-                return dict(
-                    st_mode=(S_IFREG | 0777),
-                    st_ctime=0,
-                    st_mtime=0,
-                    st_atime=0,
-                    st_nlink=1,
-                    st_size=len(self.open_files[path])
                 )
 
         raise FuseOSError(errno.ENOENT)
@@ -394,6 +383,7 @@ class B2Fuse(Operations):
     # ============
 
     def open(self, path, flags):
+        print("open", path)
         self.logger.debug("Open %s (flags:%s)", path, flags)
         path = self._remove_start_slash(path)
 
@@ -412,6 +402,7 @@ class B2Fuse(Operations):
         return self.fd
 
     def create(self, path, mode, fi=None):
+        print("create", path)
         self.logger.debug("Create %s (mode:%s)", path, mode)
 
         path = self._remove_start_slash(path)
@@ -419,7 +410,8 @@ class B2Fuse(Operations):
         file_info = {}
         file_info['fileName'] = path
 
-        self.open_files[path] = self.B2File(self, file_info, True)  #array.array('c')
+        self.open_files[path] = self.B2File(self, file_info, new_file=True)
+        self.open_files[path].upload()
 
         self.fd += 1
         return self.fd
